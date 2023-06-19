@@ -10,7 +10,7 @@ beforeAll(() => {
     document.open();
     document.write(fileContents);
     document.close();
-})
+});
 
 describe("game object contains correct keys", () => {
     test("score key exists", () => {
@@ -36,36 +36,43 @@ describe("game object contains correct keys", () => {
 describe("newGame works correctly", () => {
     beforeAll(() => {
         game.score = 42;
-        game.playerMoves = [1, 2, 3];
-        game.currentGame = [1, 2, 3];
+        game.playerMoves = ["button1", "button2"];
+        game.currentGame = ["button1", "button2"];
         document.getElementById("score").innerText = "42";
         newGame();
     });
     test("should set game score to zero", () => {
         expect(game.score).toEqual(0);
     });
-    test("should be one move in the computer's game array", () => {
-        expect(game.currentGame.length).toEqual(1);
-    });
-    test("should clear the playerMoves array", () => {
-        expect(game.playerMoves.length).toEqual(0);
-    });
     test("should display 0 for the element with id of score", () => {
         expect(document.getElementById("score").innerText).toEqual(0);
     });
+    test("should clear the player moves array", () => {
+        expect(game.playerMoves.length).toBe(0);
+    });
+    test("should add one move to the computer's game array", () => {
+        expect(game.currentGame.length).toBe(1);
+    });
+    test("expect data-listener to be true", () => {
+        newGame();
+        const elements = document.getElementsByClassName("circle");
+        for (let element of elements) {
+            expect(element.getAttribute("data-listener")).toEqual("true");
+        }
+    });
 });
 
-describe("gamePlay works correctly", () => {
+describe("gameplay works correctly", () => {
     beforeEach(() => {
         game.score = 0;
-        game.currentGame.length = 0;
-        game.playerMoves.length = 0;
+        game.currentGame = [];
+        game.playerMoves = [];
         addTurn();
     });
     afterEach(() => {
         game.score = 0;
-        game.currentGame.length = 0;
-        game.playerMoves.length = 0;
+        game.currentGame = [];
+        game.playerMoves = [];
     });
     test("addTurn adds a new turn to the game", () => {
         addTurn();
@@ -74,9 +81,9 @@ describe("gamePlay works correctly", () => {
     test("should add correct class to light up the buttons", () => {
         let button = document.getElementById(game.currentGame[0]);
         lightsOn(game.currentGame[0]);
-        expect(button.classList).toContain("light");
+        expect(button.classList).toContain(game.currentGame[0] + "light");
     });
-    test("showTurns should update game.turnNumer", () => {
+    test("showTurns should update game.turnNumber", () => {
         game.turnNumber = 42;
         showTurns();
         expect(game.turnNumber).toBe(0);
